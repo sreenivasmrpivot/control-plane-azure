@@ -1,0 +1,25 @@
+# Local Machine Settings
+
+DEFAULT_OS: 
+DEFAULT_ARCH: 
+DOWNLOAD_DIR: ./downloads
+
+# IaaS settings
+IAAS:  # example: azure (or) aws (or) gcp (or) vsphere
+TF_VAR_environment_name:  # environment name in cloud. You may use the same name as local environment name as long as it follows cloud naming convention
+TF_VAR_hosted_zone:  # It is the external dns name. Example: example.com
+
+# Product Versions
+PLATFORM_AUTOMATION_VERSION: 4.3.4
+PLATFORM_AUTOMATION_PRODUCT_SLUG: platform-automation
+# PLATFORM_AUTOMATION_TOOLKIT_IMAGE_TGZ mostly = PLATFORM_AUTOMATION_PRODUCT_SLUG + "-image-" + PLATFORM_AUTOMATION_VERSION + tgz
+PLATFORM_AUTOMATION_TOOLKIT_IMAGE_TGZ: platform-automation-image-4.3.4.tgz 
+CONCOURSE_FOR_PLATFORM_AUTOMATION_VERSION: "5.5.8 Platform Automation"
+CONCOURSE_FOR_PLATFORM_AUTOMATION_PRODUCT_SLUG: p-concourse
+OPS_MANAGER_VERSION: 2.9.0
+OPS_MANAGER_VERSION_PRODUCT_SLUG: ops-manager
+DOWNLOAD_BOSH_ASSETS: false # default false
+UBUNTU_XENIAL_STEMCELL_VERSION: 456.104
+UBUNTU_XENIAL_STEMCELL_PRODUCT_SLUG: stemcells-ubuntu-xenial
+AWS_HEAVY_STEMCELL: false # default false
+

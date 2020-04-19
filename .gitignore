@@ -348,3 +348,13 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+
+# Custom ignores
+**/downloads/
+**/config/config_secrets.yml
+**/paving-stage/paving/
+**/environments/aws/
+**/environments/azure/
+**/environments/gcp/
+**/environments/vsphere/

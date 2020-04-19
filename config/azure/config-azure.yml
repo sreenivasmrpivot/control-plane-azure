@@ -1,0 +1,3 @@
+# Azure settings
+CLOUD_NAME:  # Example: AzureCloud
+TF_VAR_location: # Example: westus

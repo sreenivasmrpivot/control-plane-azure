@@ -1,0 +1,1 @@
+# This folder has the environments you setup the control plane on. Sub folders of this folder will not be checked in as it could have sensitive information
