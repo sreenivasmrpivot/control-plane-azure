@@ -7,12 +7,13 @@ set -eu
 function cleanup_terraform {
 
   logGreen "Start: Cleanup Terraform"
-    rm -rf paving-$IAAS/.terraform
-    rm paving-$IAAS/terraform.tfplan
-    rm paving-$IAAS/terraform.tfstate
-    rm paving-$IAAS/terraform.tfstate.backup
-    rm terraform-outputs.yml
-    rm state.yml
+    pwd
+    rm -rf paving/$IAAS/.terraform
+    rm environments/${IAAS_IN}/${ENV_IN}/output/terraform.tfplan
+    rm environments/${IAAS_IN}/${ENV_IN}/output/terraform.tfstate
+    rm environments/${IAAS_IN}/${ENV_IN}/output/terraform.tfstate.backup
+    rm environments/${IAAS_IN}/${ENV_IN}/output/terraform-outputs.yml
+    rm environments/${IAAS_IN}/${ENV_IN}/output/state.yml
   logGreen "End: Cleanup Terraform"
 
 }
@@ -39,8 +40,8 @@ function cleanup {
 
   logGreen "Start: Cleanup"
     cleanup_terraform
-    cleanup_downloads
-    cleanup_paving
+    # cleanup_downloads
+    # cleanup_paving
   logGreen "End: Cleanup"
 
 }

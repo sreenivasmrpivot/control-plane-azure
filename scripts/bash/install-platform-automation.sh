@@ -1,5 +1,6 @@
 #!/bin/bash
 
+source ./scripts/bash/local-environment.sh
 source ./scripts/bash/user-input.sh
 source ./scripts/bash/log.sh
 source ./scripts/bash/set-env-vars.sh
@@ -56,41 +57,62 @@ function load_infra_source {
 
 }
 
-# Step 1: Check mandatory install params
-mandatory_install_params_check
+function install_platform {
 
-# Step 2: Set environment variables
-set_env_vars
+  # Step 1: Create Local Environment
+  setup_local_env
 
-# Step 2: Load infra source
-load_infra_source
+  logGreen "Set necessary configuration in the files under ./environments/${IAAS_IN}/${ENV_IN}"
 
-# Step 3: Set environment variables
-get_user_input
+  logGreen "Are you done setting config for the environment and do you want to proceed with the install? [yes] / [no]"
+  read -r PROCCED_INSTALL
+  if [ $PROCCED_INSTALL == "yes" ]
+  then
+    logGreen "Start: Install"
 
-# Step 4: Login to pivnet
-# login_pivnet
+    # Step 2: Check mandatory install params
+    mandatory_install_params_check
 
-# Step 45: Install required tools locally
-# install_tools
+    # Step 3: Set environment variables
+    set_env_vars
 
-# Step 6: Download the required products
-# download_products
+    # Step 4: Load infra source
+    # load_infra_source
 
-# Step 7: Setup Working Directory and Shell Setup
-# create_iaas_infra
+    # Step 5: Get User Input
+    # get_user_input
 
-# Step 8: Deploy Director
-setup_director
+    # Step 6: Login to pivnet
+    # login_pivnet
 
-# Step 9: Upload Realeases and Stemcells to BOSH Director
-# upload_releases_stemcells
+    # Step 7: Install required tools locally
+    # install_tools
 
-# Step 10: Prepare Concourse BOSH Deployment
-# deploy_concourse
+    # Step 8: Download the required products
+    # download_products
 
-# Step 11: Test Concourse BOSH Deployment
-# test_deployment
+    # Step 9: Setup IaaS components
+    # create_iaas_infra
 
-# Step 12: Logout to pivnet
-logout_pivnet
+    # Step 10: Deploy Director
+    # setup_director
+
+    # Step 11: Upload Realeases and Stemcells to BOSH Director
+    # upload_releases_stemcells
+
+    # Step 12: Prepare Concourse BOSH Deployment
+    # deploy_concourse
+
+    # Step 13: Test Concourse BOSH Deployment
+    # test_deployment
+
+    # Step 14: Logout to pivnet
+    # logout_pivnet
+        
+  else
+      logGreen "Skipping install"            
+  fi
+
+}
+
+install_platform

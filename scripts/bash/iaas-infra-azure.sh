@@ -77,7 +77,7 @@ function set_subscription {
 function create_aad_app {
 
   logGreen "Start: Create Azure AD App"
-    az ad app create --display-name "${TF_VAR_app_name}" --password ${TF_VAR_client_secret} --homepage "http://BOSHAzureCPI" --identifier-uris ${IDENTIFIER_URIS}
+    az ad app create --display-name "${TF_VAR_app_name}" --password ${TF_VAR_client_secret} --homepage "http://BOSHAzureCPI" --identifier-uris ${TF_VAR_identifier_uris}
     export app_id=$(az ad app list --display-name "${TF_VAR_app_name}" --query [].appId -o tsv)
     echo "AppId: "${app_id}
     export TF_VAR_client_id=${app_id}
@@ -88,7 +88,7 @@ function create_aad_app {
 function delete_aad_app {
 
   logGreen "Start: Delete Azure AD App"
-    az ad app delete --id ${IDENTIFIER_URIS}
+    az ad app delete --id ${TF_VAR_identifier_uris}
   logGreen "End: Delete Azure AD App"
 
 }
@@ -99,6 +99,7 @@ function create_configure_service_principal {
     az ad sp create --id "${app_id}"
     export servicePrincipalAppId=$(az ad sp list --display-name "${TF_VAR_app_name}" --query "[].appId" -o tsv)
     echo "servicePrincipalAppId: "${servicePrincipalAppId}
+    sleep 10
     az role assignment create --assignee ${servicePrincipalAppId} --role "Owner" --scope /subscriptions/${TF_VAR_subscription_id}
     az role assignment list --assignee ${servicePrincipalAppId}
   logGreen "End: Create and Configure Service Principal"
@@ -144,9 +145,23 @@ function prerequisites {
   logGreen "Start: PreRequisites"
     create_aad_app
     create_configure_service_principal
-    verify_service_principal
+    # verify_service_principal
     perform_registrations
   logGreen "End: PreRequisites"
+
+}
+
+function set_client_id {
+
+  logGreen "Start: Set Client Id"
+    if [ $DEFAULT_OS == 'darwin' ]
+    then
+      gsed -i 's/var.client_id/azuread_application.bosh-platform-automation.application_id/g' outputs.tf
+    elif [ $DEFAULT_OS == 'linux' ]
+    then
+      sed -i 's/var.client_id/azuread_application.bosh-platform-automation.application_id/g' outputs.tf
+    fi
+  logGreen "End: Set Client Id"
 
 }
 
@@ -154,10 +169,10 @@ function apply_terraform {
 
   logGreen "Start: Apply Terraform"
     terraform init
-    terraform refresh
-    terraform plan -out=terraform.tfplan
-    terraform apply -parallelism=5 terraform.tfplan
-    terraform output stable_config > ../terraform-outputs.yml
+    terraform refresh -state=../../../environments/${IAAS_IN}/${ENV_IN}/output/terraform.tfstate
+    terraform plan -out=../../../environments/${IAAS_IN}/${ENV_IN}/output/terraform.tfplan -state=../../../environments/${IAAS_IN}/${ENV_IN}/output/terraform.tfstate
+    terraform apply -parallelism=5 -state=../../../environments/${IAAS_IN}/${ENV_IN}/output/terraform.tfstate ../../../environments/${IAAS_IN}/${ENV_IN}/output/terraform.tfplan
+    terraform output -state=../../../environments/${IAAS_IN}/${ENV_IN}/output/terraform.tfstate stable_config > ../../../environments/${IAAS_IN}/${ENV_IN}/output/terraform-outputs.yml
     export CONCOURSE_URL="$(terraform output concourse_url)"
   logGreen "End: Apply Terraform"
 
@@ -167,9 +182,9 @@ function destroy_terraform {
 
   logGreen "Start: Destroy Terraform"
     terraform init
-    terraform refresh
-    terraform plan -out=terraform.tfplan
-    terraform destroy
+    terraform refresh -state=../../../environments/${IAAS_IN}/${ENV_IN}/output/terraform.tfstate
+    terraform plan -out=../../../environments/${IAAS_IN}/${ENV_IN}/output/terraform.tfplan
+    terraform destroy -state=../../../environments/${IAAS_IN}/${ENV_IN}/output/terraform.tfstate -backup=../../../environments/${IAAS_IN}/${ENV_IN}/output/terraform.tfstate.backup
   logGreen "End: Destroy Terraform"
 
 }
@@ -184,8 +199,9 @@ function create_iaas_infra {
     clone_paving
     copy_terraform
     move_to_staged_paving
+    # set_client_id
     apply_terraform
-    cd .
+    cd ../../..
   logGreen "End: Create IaaS Infrastructure"
 
 }
@@ -198,7 +214,7 @@ function destroy_iaas_infra {
     destroy_terraform
     delete_service_principal
     # delete_aad_app
-    cd ../..
+    cd ../../..
   logGreen "End: Destroy IaaS Infrastructure"
 
 }

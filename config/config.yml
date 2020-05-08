@@ -10,10 +10,10 @@ TF_VAR_environment_name:  # environment name in cloud. You may use the same name
 TF_VAR_hosted_zone:  # It is the external dns name. Example: example.com
 
 # Product Versions
-PLATFORM_AUTOMATION_VERSION: 4.3.4
+PLATFORM_AUTOMATION_VERSION: 4.3.6
 PLATFORM_AUTOMATION_PRODUCT_SLUG: platform-automation
 # PLATFORM_AUTOMATION_TOOLKIT_IMAGE_TGZ mostly = PLATFORM_AUTOMATION_PRODUCT_SLUG + "-image-" + PLATFORM_AUTOMATION_VERSION + tgz
-PLATFORM_AUTOMATION_TOOLKIT_IMAGE_TGZ: platform-automation-image-4.3.4.tgz 
+PLATFORM_AUTOMATION_TOOLKIT_IMAGE_TGZ: platform-automation-image-4.3.6.tgz 
 CONCOURSE_FOR_PLATFORM_AUTOMATION_VERSION: "5.5.8 Platform Automation"
 CONCOURSE_FOR_PLATFORM_AUTOMATION_PRODUCT_SLUG: p-concourse
 OPS_MANAGER_VERSION: 2.9.0
